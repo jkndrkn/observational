@@ -35,7 +35,7 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.1}
-  s.summary = %q{TODO}
+  s.summary = %q{Observer pattern}
   s.test_files = [
     "spec/active_record_observers_spec.rb",
      "spec/observable_spec.rb",
