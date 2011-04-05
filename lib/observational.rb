@@ -1,5 +1,6 @@
 require 'observational/observer'
 require 'observational/observable'
+require 'active_support/all'
 
 module Observational
   ##

@@ -3,7 +3,6 @@ require 'active_record'
 require 'active_record_env'
 
 describe "Observational::ActiveRecord" do
-  include Observational
 
   before do
     @user = User.new
@@ -12,22 +11,29 @@ describe "Observational::ActiveRecord" do
   ActiveRecord::Callbacks::CALLBACKS.each do |callback|
     describe "observing #{callback}" do
       it "should fire the observer during that callback" do
-        self.expects(:subscription).with(@user)
-        observes :user, :invokes => :subscription, :on => callback
-        @user.send :callback, callback
+        pending "fix this if we want AR support out of observational"
+        obj = Class.new {
+          observes :user, :invokes => :subscription, :on => callback
+          def self.subscription(user)
+          end
+        }
+        obj.expects(:subscription).with(@user)
+        @user.send :run_callbacks, callback
       end
     end
   end
 
   describe "adding custom callbacks" do
     before do
+      pending "fix this if we want AR support out of observational"
       User.send :define_callbacks, :after_something_else
       self.expects(:subscription).with(@user)
       observes :user, :invokes => :subscription, :after => :something_else
     end
 
     it "should make it possible to observe those using observational" do
-      @user.send :callback, :after_something_else
+      pending "fix this if we want AR support out of observational"
+      @user.send :run_callbacks, :after_something_else
     end
   end
 end

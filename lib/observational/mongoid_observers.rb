@@ -2,11 +2,14 @@ module Observational
   module MongoidObservers
     CALLBACKS = [:create, :destroy, :initialize, :save, :update, :validation]
     PREFIXES = %w[before after]
+    CALLBACKS_OMITTED = [:before_initialize]
 
     def self.included(klass)
       CALLBACKS.each do |callback|
         PREFIXES.each do |prefix|
           prefixed_callback = "#{prefix}_#{callback}".to_sym
+          next if CALLBACKS_OMITTED.include? prefixed_callback
+
           klass.send(prefixed_callback) { |obj| obj.send :notify_observers, prefixed_callback }
         end
       end

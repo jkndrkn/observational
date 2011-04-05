@@ -24,17 +24,18 @@ describe "Observational::MongoidObservers" do
     describe "observing ##{callback}" do
       Observational::MongoidObservers::PREFIXES.each do |prefix|
         prefixed_callback = "#{prefix}_#{callback}".to_sym
-          it "fires the '#{prefix}' observer during that callback" do
-            observer = Class.new {
-              observes :thingamajig, :invokes => :foo, prefix.to_sym => callback
-              def self.foo(thingamajig)
-              end
-            }
-            observer.expects(:foo).with(@thingamajig)
-            @thingamajig.send :run_callbacks, callback
-          end
+        next if Observational::MongoidObservers::CALLBACKS_OMITTED.include? prefixed_callback
+        it "fires the '#{prefix}' observer during that callback" do
+          observer = Class.new {
+            observes :thingamajig, :invokes => :foo, prefix.to_sym => callback
+            def self.foo(thingamajig)
+            end
+          }
+          observer.expects(:foo).with(@thingamajig)
+          @thingamajig.send :run_callbacks, callback
         end
       end
+    end
   end
 
   describe "custom callbacks" do
@@ -42,10 +43,10 @@ describe "Observational::MongoidObservers" do
       pending "until we actually need this..."
       Thingamajig.send :define_callbacks, :something_else
       observer = Class.new {
-          observes :thingamajig, :invokes => :bar, :after => :something_else
-          def self.bar(thingamajig)
-          end
-        }
+        observes :thingamajig, :invokes => :bar, :after => :something_else
+        def self.bar(thingamajig)
+        end
+      }
       observer.expects(:bar).with(@thingamajig)
       @thingamajig.send :run_callbacks, :something_else
     end
